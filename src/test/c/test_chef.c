@@ -1,16 +1,19 @@
-#include "chef.h"
+#include <string.h>
+#include <stdio.h>
 
 #include <unity_fixture.h>
 
-unsigned int testChefMakeOrder() {
-    uint16_t sum = chefMakeOrder("hotdog");
+#include "chef.h"
 
-    if (sum != 5) {
-        printf("ERROR sum: %d", sum);
-        return 1;
+extern unsigned int __real_chefMakeOrder(const char* name);
+
+unsigned int __wrap_chefMakeOrder(const char* name) {
+    printf("call: %s\n", __FUNCTION__);
+    if (strcmp("burger", name) == 0) {
+        return 7;
+    } else {
+        return __real_chefMakeOrder(name);
     }
-
-    return 0;
 }
 
 TEST_GROUP(test_chef);
@@ -26,6 +29,12 @@ TEST(test_chef, test1) {
     TEST_ASSERT_EQUAL(5, sum);
 }
 
+TEST(test_chef, test2) {
+    unsigned int sum = chefMakeOrder("burger");
+    TEST_ASSERT_EQUAL(7, sum);
+}
+
 TEST_GROUP_RUNNER(test_chef) {
     RUN_TEST_CASE(test_chef, test1);
+    RUN_TEST_CASE(test_chef, test2);
 }

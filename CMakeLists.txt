@@ -50,3 +50,6 @@ add_executable("test-app" "src/test/c/main.c")
 target_link_libraries("test-app" PUBLIC
     "test-lib"
 )
+target_link_options("test-app" PUBLIC
+    "-Wl,--wrap=chefMakeOrder"
+)
